@@ -1,0 +1,4 @@
+GET {{host}}/weatherforecast/
+Accept: application/json
+
+###
