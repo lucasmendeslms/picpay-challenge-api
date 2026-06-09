@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PicPayChallenge.Api/PicPayChallenge.Api.csproj" />
+    <Project Path="src/PicPayChallenge.Application/PicPayChallenge.Application.csproj" />
+    <Project Path="src/PicPayChallenge.Domain/PicPayChallenge.Domain.csproj" />
+    <Project Path="src/PicPayChallenge.Infrastructure/PicPayChallenge.Infrastructure.csproj" />
+  </Folder>
+</Solution>
