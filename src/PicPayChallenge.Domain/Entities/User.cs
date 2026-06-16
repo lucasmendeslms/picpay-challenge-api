@@ -4,17 +4,17 @@ namespace PicPayChallenge.Domain.Entities;
 
 public abstract class User
 {
-    public int Id { get; protected set; }
-    public Guid PublicId { get; init; } = Guid.NewGuid();
+    public Guid Id { get; init; } = Guid.NewGuid();
+    public int PublicId { get; set; }
     public required string Email { get; set; }
     public required string Cep { get; set; }
     
     public byte[] PasswordHash { get; private set; } = null!;
     public byte[] PasswordSalt { get; private set; } = null!;
 
-    public decimal Balance { get; protected set; } = 0.00m;
+    public Account Account { get; private set; } = null!;
 
-    protected void SetPassword(string password)
+    public void SetPassword(string password)
     {
         if (string.IsNullOrWhiteSpace(password))
         {
@@ -35,7 +35,7 @@ public abstract class User
 
         using var hmac = new System.Security.Cryptography.HMACSHA512(PasswordSalt);
 
-        var computedHash = hmac.ComputeHash(hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)));
+        var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
 
         return computedHash.SequenceEqual(PasswordHash);
     }
