@@ -14,6 +14,6 @@ public class CustomerRepository(ApplicationDbContext db) : ICustomerRepository
 
     public async Task<bool> SaveChangesAsync()
     {
-        return await db.SaveChangesAsync() > ServiceConstants.NoRowsAffected;
+        return await db.SaveChangesAsync() > DatabaseConstants.NoRowsAffected;
     }
 }
