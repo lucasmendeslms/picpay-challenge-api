@@ -5,7 +5,7 @@ namespace PicPayChallenge.Domain.Entities;
 public abstract class User
 {
     public Guid Id { get; init; } = Guid.NewGuid();
-    public int PublicId { get; set; }
+    public required string Username { get; set; }
     public required string Email { get; set; }
     public required string Cep { get; set; }
     
