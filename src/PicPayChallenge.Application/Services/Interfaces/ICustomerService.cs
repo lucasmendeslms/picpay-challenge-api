@@ -1,9 +1,9 @@
-using PicPayChallenge.Application.DTOs.Customer;
+using PicPayChallenge.Application.DTOs;
+using PicPayChallenge.Domain.Common;
 
 namespace PicPayChallenge.Application.Services.Interfaces;
 
 public interface ICustomerService
 {
-    Task<bool> RegisterAsync(RegisterCustomerDto customerDto);
-    
+    Task<Result<RegisterCustomerResponse>> RegisterAsync(RegisterCustomerRequest customerDto);
 }

@@ -1,11 +1,11 @@
 using FluentValidation;
 using PicPayChallenge.Domain.Constants;
 
-namespace PicPayChallenge.Application.DTOs.Customer.Validators;
+namespace PicPayChallenge.Application.DTOs;
 
-public class RegisterCustomerDtoValidator : AbstractValidator<RegisterCustomerDto>
+public class RegisterCustomerRequestValidator : AbstractValidator<RegisterCustomerRequest>
 {
-    public RegisterCustomerDtoValidator()
+    public RegisterCustomerRequestValidator()
     {
         RuleFor(x => x.FirstName)
             .NotEmpty()

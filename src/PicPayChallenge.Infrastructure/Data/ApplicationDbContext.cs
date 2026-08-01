@@ -15,6 +15,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .StartsAt(95720)
             .IncrementsBy(1);
 
+        modelBuilder.HasSequence<int>("AccountNumberSequence")
+            .StartsAt(89795)
+            .IncrementsBy(1);
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 }
