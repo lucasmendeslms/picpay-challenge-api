@@ -29,9 +29,11 @@ public class CustomerService : ICustomerService
 
         customer.SetPassword(customerDto.Password);
 
-        var account = _accountService.CreateAccountAsync(customer.Id);
+        var account = await _accountService.CreateAccountAsync(customer.Id);
 
-        return Result.Success();
+        var customerResponse = new RegisterCustomerResponse(customer.Username, "001", "12334", 1, 0);
+
+        return Result.Success(customerResponse);
     }
 
 

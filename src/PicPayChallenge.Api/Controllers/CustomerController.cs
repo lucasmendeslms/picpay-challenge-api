@@ -29,7 +29,7 @@ public class CustomerController(ICustomerService customerService) : ControllerBa
         }
         
         var result = await _customerService.RegisterAsync(customer);
-
+        
         return Created();
     }
 }
