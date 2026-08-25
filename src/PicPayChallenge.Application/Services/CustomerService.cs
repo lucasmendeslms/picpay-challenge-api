@@ -1,20 +1,24 @@
 using PicPayChallenge.Domain.Entities;
-using PicPayChallenge.Application.Services.Interfaces;
+using PicPayChallenge.Application.Interfaces.Services;
 using PicPayChallenge.Application.DTOs;
 using PicPayChallenge.Domain.Common;
+using PicPayChallenge.Domain.ValueObjects;
+using PicPayChallenge.Application.Interfaces.Common;
 
 namespace PicPayChallenge.Application.Services;
 
 public class CustomerService : ICustomerService
 {
     private readonly IAccountService _accountService;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CustomerService(IAccountService accountService)
+    public CustomerService(IAccountService accountService, IUnitOfWork unitOfWork)
     {
         _accountService = accountService;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<RegisterCustomerResponse>> RegisterAsync(RegisterCustomerRequest customerDto)
+    public async Task<Result> RegisterAsync(RegisterCustomerRequest customerDto)
     {
 
        var customer = new Customer
@@ -22,18 +26,23 @@ public class CustomerService : ICustomerService
            FirstName = customerDto.FirstName,
            LastName = customerDto.LastName,
            Username = customerDto.Username,
-           Cpf = customerDto.Cpf,
+           Cpf = new Cpf(customerDto.Cpf),
            Email = customerDto.Email,
            Cep = customerDto.Cep
        };
 
         customer.SetPassword(customerDto.Password);
 
-        var account = await _accountService.CreateAccountAsync(customer.Id);
+        var createAccountResult = await _accountService.CreateAccountAsync(customer.Id);
 
-        var customerResponse = new RegisterCustomerResponse(customer.Username, "001", "12334", 1, 0);
+        if (createAccountResult.IsFailure)
+        {
+            Result.Failure(Domain.Error.None);    
+        }
 
-        return Result.Success(customerResponse);
+        await _unitOfWork.SaveChangesAsync();
+
+        return Result.Success();
     }
 
 

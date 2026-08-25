@@ -1,14 +1,27 @@
 using PicPayChallenge.Domain.Enums;
+using PicPayChallenge.Domain.ValueObjects;
 
 namespace PicPayChallenge.Domain.Entities;
 
-public class Account(Guid userId)
+public class Account
 {
-    public Guid Id { get; init; } = Guid.NewGuid();
-    public Guid UserId { get; init; } = userId;
-    public string Agency { get; private set; } = null!;
-    public int AccountNumber { get; private set; }
-    public int Digit { get; private set; }
-    public decimal Balance { get; private set; } = 0.00m;
-    public StatusAccount Status { get; private set; } = StatusAccount.Active;
+    private const string AgencyNumber = "001";
+    private const decimal InitialBalance = 0.00m;
+
+    public Guid Id { get; init; }
+    public Guid UserId { get; init; }
+    public AccountNumber AccountNumber { get; private set; }
+    public string Agency { get; private set; }
+    public decimal Balance { get; private set; }
+    public StatusAccount Status { get; private set; }
+
+    public Account(Guid userId)
+    {
+        Id = Guid.NewGuid();
+        UserId = userId;
+        AccountNumber = new AccountNumber();
+        Agency = AgencyNumber;
+        Balance = InitialBalance;
+        Status = StatusAccount.Pending;
+    }
 }

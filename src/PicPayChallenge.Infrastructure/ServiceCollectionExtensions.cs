@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
 using PicPayChallenge.Infrastructure.Data;
-using PicPayChallenge.Application.Services.Interfaces;
+using PicPayChallenge.Application.Interfaces.Services;
 using PicPayChallenge.Application.Services;
 
 namespace PicPayChallenge.Infrastructure.Config;

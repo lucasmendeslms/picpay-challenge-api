@@ -4,6 +4,9 @@ namespace PicPayChallenge.Domain.Entities;
 
 public abstract class User
 {
+    public const int MaxUsernameLength = 200;
+    public const int MaxEmailLength = 200;
+
     public Guid Id { get; init; } = Guid.NewGuid();
     public required string Username { get; set; }
     public required string Email { get; set; }
@@ -18,7 +21,7 @@ public abstract class User
     {
         if (string.IsNullOrWhiteSpace(password))
         {
-            throw new DomainException($"{nameof(password)} cannot be null or empty");
+            throw new NullReferenceException($"{nameof(password)} cannot be null or empty");
         }
 
         using var hmac = new System.Security.Cryptography.HMACSHA512();

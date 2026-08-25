@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PicPayChallenge.Domain.Entities;
 using PicPayChallenge.Domain.Constants;
 
-namespace PicPayChalleng.Infrastructure.Data.Mappings;
+namespace PicPayChalleng.Infrastructure.Data.Configurations;
 
 public class AccountConfiguration : IEntityTypeConfiguration<Account>
 {

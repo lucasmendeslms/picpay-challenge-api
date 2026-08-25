@@ -2,23 +2,31 @@ namespace PicPayChallenge.Domain.ValueObjects;
 
 public record Cpf
 {
+    public const int CpfDigitsLength = 11;
+
     public string Value { get; init; }
 
     public Cpf(string value)
     {
-        if (string.IsNullOrWhiteSpace(value) || !ValidateCpf(value))
+        if (!IsValid(value))
         {
             throw new ArgumentException("Invalid document.");
         }
 
-        Value = value.Replace(".", "").Replace("-", "");
+        Value = CleanCpf(value);
     }
 
-    private static bool ValidateCpf(string cpf)
+    public static bool IsValid(string cpf)
     {
-        cpf = cpf.Replace(".", "").Replace("-", "");
 
-        if (cpf.Length != 11 || new string(cpf[0], 11) == cpf)
+        if (string.IsNullOrWhiteSpace(cpf))
+        {
+            return false;    
+        }
+
+        cpf = CleanCpf(cpf);
+
+        if (cpf.Length != CpfDigitsLength || new string(cpf[0], CpfDigitsLength) == cpf)
         {
             return false;
         }
@@ -35,8 +43,8 @@ public record Cpf
 
         }
 
-        var remainder = sum % 11;
-        var digit1 = remainder < 2 ? 0 : 11 - remainder;
+        var remainder = sum % CpfDigitsLength;
+        var digit1 = remainder < 2 ? 0 : CpfDigitsLength - remainder;
 
         tempCpf += digit1;
         sum = 0;
@@ -46,9 +54,11 @@ public record Cpf
             sum += int.Parse(tempCpf[i].ToString()) * multipliers2[i];
         }
 
-        remainder = sum % 11;
-        var digit2 = remainder < 2 ? 0 : 11 - remainder;
+        remainder = sum % CpfDigitsLength;
+        var digit2 = remainder < 2 ? 0 : CpfDigitsLength - remainder;
 
         return cpf.EndsWith(digit1.ToString() + digit2.ToString());
     }
+
+    private static string CleanCpf(string cpf) => cpf.Replace(".", "").Replace("-", "").Trim();
 }

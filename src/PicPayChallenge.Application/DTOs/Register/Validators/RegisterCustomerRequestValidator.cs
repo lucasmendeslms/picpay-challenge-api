@@ -1,5 +1,6 @@
 using FluentValidation;
 using PicPayChallenge.Domain.Constants;
+using PicPayChallenge.Domain.ValueObjects;
 
 namespace PicPayChallenge.Application.DTOs;
 
@@ -21,9 +22,8 @@ public class RegisterCustomerRequestValidator : AbstractValidator<RegisterCustom
 
         RuleFor(x => x.Cpf)
             .NotEmpty()
-            .Length(CustomerConstants.CPF_LENGTH)
-            .WithMessage("CPF must be exactly 11 characters.")
-            .Matches(@"^\d{11}$")
+            .WithMessage("CPF is required.")
+            .Must(Cpf.IsValid)
             .WithMessage("CPF must contain only digits.");
 
         RuleFor(x => x.Email)
