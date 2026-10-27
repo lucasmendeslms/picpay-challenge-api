@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PicPayChallenge.Domain.Entities;
-using PicPayChallenge.Domain.Constants;
 using PicPayChallenge.Domain.ValueObjects;
 
 namespace PicPayChallenge.Infrastructure.Data.Configurations;
@@ -29,9 +28,9 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         builder.Property(c => c.Cpf)
             .HasConversion(
                 cpf => cpf.Value,
-                value => new Cpf(value)
+                value => Cpf.Create(value)
             )
-            .HasMaxLength(Cpf.CpfDigitsLength)
+            .HasMaxLength(Cpf.MaxLength)
             .IsFixedLength()
             .IsRequired();
 
@@ -40,11 +39,11 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .IsRequired();
 
         builder.Property(c => c.PasswordHash)
-            .HasMaxLength(CustomerConstants.MAX_STRING_LENGTH)
+            .HasMaxLength(User.MaxPasswordHashLength)
             .IsRequired();
 
         builder.Property(c => c.PasswordSalt)
-            .HasMaxLength(CustomerConstants.MAX_STRING_LENGTH)
+            .HasMaxLength(User.MaxPasswordSaltLength)
             .IsRequired();
 
         builder.HasIndex(c => c.Username).IsUnique();

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PicPayChallenge.Application.DTOs;
-using PicPayChallenge.Application.Services.Interfaces;
+using PicPayChallenge.Application.Interfaces.Services;
 
 namespace PicPayChallenge.Api.Controllers;
 
@@ -31,5 +31,12 @@ public class CustomerController(ICustomerService customerService) : ControllerBa
         var result = await _customerService.RegisterAsync(customer);
         
         return Created();
+    }
+
+    [HttpGet("teste")]
+    public Task<IActionResult> TestException()
+    {
+        // Força o estouro da sua exceção customizada para testar a captura no Middleware
+        throw new InvalidOperationException("Usuário de teste não foi encontrado no sistema.");
     }
 }

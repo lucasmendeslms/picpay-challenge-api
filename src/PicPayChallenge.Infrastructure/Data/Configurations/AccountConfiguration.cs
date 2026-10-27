@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PicPayChallenge.Domain.Entities;
 using PicPayChallenge.Domain.Constants;
+using PicPayChallenge.Domain.ValueObjects;
 
 namespace PicPayChalleng.Infrastructure.Data.Configurations;
 
@@ -12,23 +13,21 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
         builder.ToTable("Accounts");
 
         builder.HasKey(a => a.Id);
+
+        // builder.OwnsOne
         
         builder.Property(a => a.Agency)
-            .HasDefaultValue(AccountConstants.DEFAULT_AGENCY_DIGITS)
-            .HasMaxLength(AccountConstants.MAX_AGENCY_DIGITS)
+            .HasMaxLength(Account.MaxAgencyDigitsLength)
             .IsRequired();
 
-        builder.Property(a => a.AccountNumber)
-            .HasDefaultValueSql("NEXT VALUE FOR AccountNumberSequence")
-            .IsRequired();
 
-        builder.Property(a => a.Digit)
-            .HasComputedColumnSql("dbo.CalculateAccountDigit([AccountNumber])")
-            .IsRequired();
+        // builder.Property(a => a.Digit)
+        //     .HasComputedColumnSql("dbo.CalculateAccountDigit([AccountNumber])")
+        //     .IsRequired();
         
         builder.Property(a => a.Balance)
-            .HasColumnType(AccountConstants.BALANCE_COLUMN_TYPE)
-            .HasDefaultValue(AccountConstants.DEFAULT_INITIAL_BALANCE)
+            .HasColumnType(Account.BalanceColumnType)
+            .HasDefaultValue(Account.DefaultInitialBalance)
             .IsRequired();
 
         builder.HasOne<User>()

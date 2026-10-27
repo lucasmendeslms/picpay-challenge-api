@@ -1,16 +1,20 @@
-using PicPayChallenge.Domain.Exceptions;
+using PicPayChallenge.Domain.ValueObjects;
 
 namespace PicPayChallenge.Domain.Entities;
 
 public abstract class User
 {
     public const int MaxUsernameLength = 200;
+    public const int MaxPasswordHashLength = 200;
+    public const int MaxPasswordSaltLength = 200;
     public const int MaxEmailLength = 200;
+    public const int MaxCepLength = 200;
+    public const int MinPasswordLength = 8;
 
     public Guid Id { get; init; } = Guid.NewGuid();
     public required string Username { get; set; }
     public required string Email { get; set; }
-    public required string Cep { get; set; }
+    public required Cep Cep { get; set; }
     
     public byte[] PasswordHash { get; private set; } = null!;
     public byte[] PasswordSalt { get; private set; } = null!;

@@ -5,5 +5,5 @@ namespace PicPayChallenge.Application.Interfaces.Repositories;
 
 public interface ICustomerRepository
 {
-   Task<Result> AddCustomerAsync(Customer customer);
+   Task AddAsync(Customer customer);
 }

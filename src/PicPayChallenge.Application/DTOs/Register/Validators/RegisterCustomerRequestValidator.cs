@@ -1,5 +1,5 @@
 using FluentValidation;
-using PicPayChallenge.Domain.Constants;
+using PicPayChallenge.Domain.Entities;
 using PicPayChallenge.Domain.ValueObjects;
 
 namespace PicPayChallenge.Application.DTOs;
@@ -18,7 +18,7 @@ public class RegisterCustomerRequestValidator : AbstractValidator<RegisterCustom
 
         RuleFor(x => x.Username)
             .NotEmpty()
-            .MaximumLength(UserConstants.MAX_USERNAME_LENGTH);
+            .MaximumLength(User.MaxUsernameLength);
 
         RuleFor(x => x.Cpf)
             .NotEmpty()
@@ -33,7 +33,7 @@ public class RegisterCustomerRequestValidator : AbstractValidator<RegisterCustom
 
         RuleFor(x => x.Password)
             .NotEmpty()
-            .MinimumLength(UserConstants.MIN_PASSWORD_LENGTH)
+            .MinimumLength(User.MinPasswordLength)
             .WithMessage("Password must be at least 8 characters long.");
     }
 }

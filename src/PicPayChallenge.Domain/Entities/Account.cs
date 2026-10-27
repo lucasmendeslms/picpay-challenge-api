@@ -5,8 +5,11 @@ namespace PicPayChallenge.Domain.Entities;
 
 public class Account
 {
-    private const string AgencyNumber = "001";
-    private const decimal InitialBalance = 0.00m;
+    public const string AgencyNumber = "001";
+    public const string BalanceColumnType = "decimal(18,2)";
+    public const decimal DefaultInitialBalance = 0.00m;
+    public const int MaxAgencyDigitsLength = 4;
+
 
     public Guid Id { get; init; }
     public Guid UserId { get; init; }
@@ -19,9 +22,9 @@ public class Account
     {
         Id = Guid.NewGuid();
         UserId = userId;
-        AccountNumber = new AccountNumber();
+        AccountNumber = AccountNumber.Generate();
         Agency = AgencyNumber;
-        Balance = InitialBalance;
+        Balance = DefaultInitialBalance;
         Status = StatusAccount.Pending;
     }
 }

@@ -1,64 +1,120 @@
+using System.Text.RegularExpressions;
+
 namespace PicPayChallenge.Domain.ValueObjects;
 
-public record Cpf
+public readonly record struct Cpf
 {
-    public const int CpfDigitsLength = 11;
+    // Structural constants
+    public const int MaxLength = 11;
+    private const int BaseLengthWithoutDigits = 9;
+    private const int BaseLengthWithFirstDigit = 10;
+    
+    // Algorithmic validation constants (Brazilian CPF specification rules)
+    private const int ModulusDivider = 11;
+    private const int RemainderThreshold = 2;
+    private const int DefaultCheckDigit = 0;
 
-    public string Value { get; init; }
+    // Pattern and formatting constants
+    private const string NonDigitPattern = @"[^\d]";
+    private const string CpfDisplayFormat = @"000\.000\.000\-00";
 
-    public Cpf(string value)
+    private static readonly int[] Multiplier1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+    private static readonly int[] Multiplier2 = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
+
+    /// <summary>
+    /// Gets the raw unformatted 11-digit CPF value.
+    /// </summary>
+    public string Value { get; }
+
+    private Cpf(string unformattedValue)
     {
-        if (!IsValid(value))
-        {
-            throw new ArgumentException("Invalid document.");
-        }
-
-        Value = CleanCpf(value);
+        Value = unformattedValue;
     }
 
-    public static bool IsValid(string cpf)
+    /// <summary>
+    /// Factory method to create a valid CPF instance.
+    /// </summary>
+    public static Cpf Create(string value)
     {
-
-        if (string.IsNullOrWhiteSpace(cpf))
+        if (!TryParse(value, out var cpf))
         {
-            return false;    
+            throw new ArgumentException("The provided CPF is invalid.", nameof(value));
         }
 
-        cpf = CleanCpf(cpf);
+        return cpf;
+    }
 
-        if (cpf.Length != CpfDigitsLength || new string(cpf[0], CpfDigitsLength) == cpf)
-        {
+    /// <summary>
+    /// Tries to parse and validate a CPF string.
+    /// </summary>
+    public static bool TryParse(string input, out Cpf cpf)
+    {
+        cpf = default;
+
+        if (string.IsNullOrWhiteSpace(input))
             return false;
-        }
 
-        var multipliers1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
-        var multipliers2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+        // Strip non-digit characters using the defined pattern constant
+        string sanitized = Regex.Replace(input, NonDigitPattern, string.Empty);
 
-        var tempCpf = cpf.Substring(0, 9);
-        var sum = 0;
+        if (!IsValid(sanitized))
+            return false;
 
-        for (int i = 0; i < 9; i++)
+        cpf = new Cpf(sanitized);
+        return true;
+    }
+
+    /// <summary>
+    /// Validates a raw 11-digit CPF string against Brazilian revenue rules.
+    /// </summary>
+    public static bool IsValid(string cpfDigits)
+    {
+        if (string.IsNullOrWhiteSpace(cpfDigits) || cpfDigits.Length != MaxLength)
+            return false;
+
+        // Reject sequences composed entirely of identical digits (e.g., "11111111111")
+        if (cpfDigits.All(c => c == cpfDigits[0]))
+            return false;
+
+        // --- First Verification Digit Calculation ---
+        string tempCpf = cpfDigits.Substring(0, BaseLengthWithoutDigits);
+        int sum = 0;
+
+        for (int i = 0; i < BaseLengthWithoutDigits; i++)
         {
-            sum += int.Parse(tempCpf[i].ToString()) * multipliers1[i];
-
+            sum += (tempCpf[i] - '0') * Multiplier1[i];
         }
 
-        var remainder = sum % CpfDigitsLength;
-        var digit1 = remainder < 2 ? 0 : CpfDigitsLength - remainder;
+        int remainder = sum % ModulusDivider;
+        int firstDigit = remainder < RemainderThreshold ? DefaultCheckDigit : ModulusDivider - remainder;
 
-        tempCpf += digit1;
+        tempCpf += firstDigit;
         sum = 0;
 
-        for (int i = 0; i < 10; i++)
+        // --- Second Verification Digit Calculation ---
+        for (int i = 0; i < BaseLengthWithFirstDigit; i++)
         {
-            sum += int.Parse(tempCpf[i].ToString()) * multipliers2[i];
+            sum += (tempCpf[i] - '0') * Multiplier2[i];
         }
 
-        remainder = sum % CpfDigitsLength;
-        var digit2 = remainder < 2 ? 0 : CpfDigitsLength - remainder;
+        remainder = sum % ModulusDivider;
+        int secondDigit = remainder < RemainderThreshold ? DefaultCheckDigit : ModulusDivider - remainder;
 
-        return cpf.EndsWith(digit1.ToString() + digit2.ToString());
+        // Compare calculated digits with the actual ending digits of the input
+        string expectedDigits = $"{firstDigit}{secondDigit}";
+        return cpfDigits.EndsWith(expectedDigits);
     }
 
-    private static string CleanCpf(string cpf) => cpf.Replace(".", "").Replace("-", "").Trim();
+    /// <summary>
+    /// Returns the formatted CPF string: XXX.XXX.XXX-XX
+    /// </summary>
+    public string ToFormattedString()
+    {
+        if (string.IsNullOrEmpty(Value) || Value.Length != MaxLength)
+            return string.Empty;
+
+        return Convert.ToUInt64(Value).ToString(CpfDisplayFormat);
+    }
+
+    public override string ToString() => Value;
 }

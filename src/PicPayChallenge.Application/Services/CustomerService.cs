@@ -26,9 +26,9 @@ public class CustomerService : ICustomerService
            FirstName = customerDto.FirstName,
            LastName = customerDto.LastName,
            Username = customerDto.Username,
-           Cpf = new Cpf(customerDto.Cpf),
+           Cpf = Cpf.Create(customerDto.Cpf),
            Email = customerDto.Email,
-           Cep = customerDto.Cep
+           Cep = Cep.Create(customerDto.Cep)
        };
 
         customer.SetPassword(customerDto.Password);
