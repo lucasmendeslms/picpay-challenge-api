@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PicPayChallenge.Domain.Entities;
-using PicPayChallenge.Domain.Constants;
 using PicPayChallenge.Domain.ValueObjects;
 
 namespace PicPayChalleng.Infrastructure.Data.Configurations;

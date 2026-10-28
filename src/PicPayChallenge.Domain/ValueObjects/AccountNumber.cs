@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-
 namespace PicPayChallenge.Domain.ValueObjects;
 
 public readonly record struct AccountNumber
