@@ -5,7 +5,7 @@ using PicPayChallenge.Application.Interfaces.Services;
 namespace PicPayChallenge.Api.Controllers;
 
 [ApiController]
-[Route("api/customer")]
+[Route("api/customers")]
 public class CustomerController(ICustomerService customerService) : ControllerBase
 {
     private readonly ICustomerService _customerService = customerService;
@@ -20,7 +20,7 @@ public class CustomerController(ICustomerService customerService) : ControllerBa
 
         if (validate.IsValid is false)
         {
-            throw new InvalidOperationException();
+            throw new ArgumentException();
         }
         
         var result = await _customerService.RegisterAsync(customer);
