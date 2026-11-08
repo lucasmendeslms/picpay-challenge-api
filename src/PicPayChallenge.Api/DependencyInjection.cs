@@ -1,4 +1,5 @@
 using Microsoft.OpenApi;
+using PicPayChallenge.Api.Handlers;
 
 namespace PicPayChallenge.Api;
 
@@ -8,7 +9,8 @@ public static class DependencyInjection
     {
         services.AddSwagger();
         services.AddControllers();
-
+        services.AddErrorHandling();
+        
         return services;
     }
 
@@ -23,6 +25,24 @@ public static class DependencyInjection
                 Version = "v3"
             });
         });
+
+        return services;
+    }
+
+    private static IServiceCollection AddErrorHandling(this IServiceCollection services)
+    {
+        services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = ctx =>
+            {
+                ctx.ProblemDetails.Extensions["detail"] = null;
+                ctx.ProblemDetails.Extensions["instance"] = ctx.HttpContext.Request.Path.Value;
+                ctx.ProblemDetails.Extensions["traceId"] = ctx.HttpContext.TraceIdentifier;
+                ctx.ProblemDetails.Extensions["timestamp"] = DateTime.UtcNow;
+            };
+        });
+
+        services.AddExceptionHandler<GlobalExceptionHandler>();
 
         return services;
     }
